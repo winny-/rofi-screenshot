@@ -35,7 +35,7 @@ countdown() {
 
 crtc() {
   notify-send "Screenshot" "Select a region to capture"
-  ffcast -q $(slop -n -f '-g %g ') png /tmp/screenshot_clip.png
+  ffcast -q "$(slop -n -f '-g %g ')" png /tmp/screenshot_clip.png
   xclip -selection clipboard -t image/png /tmp/screenshot_clip.png
   rm /tmp/screenshot_clip.png
   notify-send "Screenshot" "Region copied to Clipboard"
@@ -44,7 +44,7 @@ crtc() {
 crtf() {
   notify-send "Screenshot" "Select a region to capture"
   dt=$(date '+%d-%m-%Y %H:%M:%S')
-  ffcast -q $(slop -n -f '-g %g ') png "$screenshot_directory/$dt.png"
+  ffcast -q "$(slop -n -f '-g %g ')" png "$screenshot_directory/$dt.png"
   notify-send "Screenshot" "Region saved to $screenshot_directory"
 }
 
@@ -64,7 +64,7 @@ cstf() {
 rgrtf() {
   notify-send "Screenshot" "Select a region to record"
   dt=$(date '+%d-%m-%Y %H:%M:%S')
-  ffcast -q $(slop -n -f '-g %g ' && countdown) rec /tmp/screenshot_gif.mp4
+  ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec /tmp/screenshot_gif.mp4
   notify-send "Screenshot" "Converting to gif... (this can take a while)"
   video_to_gif /tmp/screenshot_gif.mp4 "$screenshot_directory/$dt.gif"
   rm /tmp/screenshot_gif.mp4
@@ -84,7 +84,7 @@ rgstf() {
 rvrtf() {
   notify-send "Screenshot" "Select a region to record"
   dt=$(date '+%d-%m-%Y %H:%M:%S')
-  ffcast -q $(slop -n -f '-g %g ' && countdown) rec "$screenshot_directory/$dt.mp4"
+  ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec "$screenshot_directory/$dt.mp4"
   notify-send "Screenshot" "Recording saved to $screenshot_directory"
 }
 
@@ -107,7 +107,7 @@ get_options() {
 }
 
 check_deps() {
-  if ! hash $1 2>/dev/null; then
+  if ! command -v "$1" >/dev/null; then
     echo "Error: This script requires $1"
     exit 1
   fi
@@ -124,7 +124,7 @@ main() {
   if [[ $1 == '--help' ]] || [[ $1 = '-h' ]]
   then
     echo ### rofi-screenshot
-    echo USAGE: rofi-screenshot [OPTION]
+    echo 'USAGE: rofi-screenshot [OPTION]'
     echo \(no option\)
     echo "    show the screenshot menu"
     echo -s, --stop
@@ -175,14 +175,8 @@ main() {
       rvstf
       ;;
   esac
-
-  # done
-  set -e
 }
 
-main $1 &
+main "$1"
 
-exit 0
-
-!/bin/bash
 
