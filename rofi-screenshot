@@ -7,8 +7,12 @@
 ##    show the menu with rofi-screenshot
 ##    stop recording with rofi-screenshot -s
 
+cfg_file=${XDG_CONFIG_DIR:-"$HOME/.config"}/rofi-screenshot/config.bash
+# shellcheck disable=SC1090
+[[ -r $cfg_file ]] && . "$cfg_file"
+
 # Screenshot directory
-screenshot_directory="$HOME/Pictures/Screenshots"
+: "${screenshot_directory:="$HOME/Pictures/Screenshots"}"
 
 # set ffmpeg defaults
 ffmpeg() {
